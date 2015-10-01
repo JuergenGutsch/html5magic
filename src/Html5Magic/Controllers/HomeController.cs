@@ -48,5 +48,10 @@ namespace Html5Magic.Controllers
         {
             return View();
         }
+
+        public IActionResult WebWorker()
+        {
+            return View();
+        }
     }
 }

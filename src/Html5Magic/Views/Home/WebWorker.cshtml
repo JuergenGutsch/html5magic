@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "Web Worker & Messaging";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form class="form">
+            <div class="form-group">
+                <button onclick="sayHI()" class="btn" type="button">Say HI</button>
+                <button onclick="unknownCmd()" class="btn" type="button">Send unknown command</button>
+                <button onclick="stop()" class="btn" type="button">Stop worker</button>
+            </div>
+
+            <output id="result" class="alert alert-info"></output>
+        </form>
+
+        <script>
+            function sayHI() {
+                worker.postMessage({ 'cmd': 'start', 'msg': 'Hi' });
+            }
+
+            function stop() {
+                // worker.terminate() from this script would also stop the worker.
+                worker.postMessage({ 'cmd': 'stop', 'msg': 'Bye' });
+            }
+
+            function unknownCmd() {
+                worker.postMessage({ 'cmd': 'foobard', 'msg': '???' });
+            }
+
+            var worker = new Worker('/js/doWork.js');
+
+            worker.addEventListener('message', function (e) {
+                document.getElementById('result').textContent = e.data;
+            }, false);
+        </script>
+    </div>
+    <div class="col-md-4">
+
+    </div>
+</div>
+
+
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full" temp_src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full">
+
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
