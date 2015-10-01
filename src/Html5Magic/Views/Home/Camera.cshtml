@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Camera";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <video id="video" width="640" height="480" autoplay></video>
+
+        <script>
+            $(function () {
+                var canvas = $('#canvas')[0],
+                    context = canvas.getContext('2d'),
+                    video = $('#video')[0],
+                    constraints = { 'video': true },
+                    errBack = function(error) {
+                        console.log('Video capture error: ', error.code);
+                    };
+
+                function userMedia() {
+                    return navigator.getUserMedia = navigator.getUserMedia ||
+                    navigator.webkitGetUserMedia ||
+                    navigator.mozGetUserMedia ||
+                    navigator.msGetUserMedia || null;
+                }
+
+                if (userMedia()) {
+                    navigator.getUserMedia(constraints, function (stream) {
+                        // URL Object is different in WebKit
+                        var url = window.URL || window.webkitURL;
+                        // create the url and set the source of the video element
+                        video.src = url ? url.createObjectURL(stream) : stream;
+                        video.play();
+                    }, errBack);
+                }
+                $('#snap').on('click', function () {
+                    context.drawImage(video, 0, 0, 640, 480);
+                });
+            });
+
+        </script>
+    </div>
+    <div class="col-md-4">
+        <button id="snap">Snap Photo</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <canvas id="canvas" width="640" height="480"></canvas>
+    </div>
+    <div class="col-md-4">
+
+    </div>
+</div>

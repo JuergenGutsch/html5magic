@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Storage";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <form id="saveToStorage" class="form">
+            <div class="form-group">
+                <label for="name">Name:</label><br />
+                <input type="text" id="name" class="form-control" /><br />
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label><br />
+                <input type="number" id="age" class="form-control" /><br />
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label><br />
+                <input type="text" id="city" class="form-control" /><br />
+            </div>
+            <div class="form-group">
+                <label for="country">Country</label><br />
+                <select id="country" class="form-control">
+                    <option value=""></option>
+                    <option value="ger">Germany</option>
+                    <option value="fra">France</option>
+                    <option value="aut">Austria</option>
+                    <option value="swi">Switzerland</option>
+                </select><br />
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-danger" id="reset">Reset</button>
+                <button type="button" class="btn btn-primary" id="save">Save</button>
+                <button type="button" class="btn btn-info" id="show">Show</button>
+            </div>
+        </form>
+        <script>
+            $(function () {
+                var sessionStorage = window.sessionStorage;
+                var localStorage = window.localStorage;
+
+                var resetButton = $('#reset');
+                var saveButton = $('#save');
+                var showButton = $('#show');
+
+                resetButton.on('click', function (event) {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    $('#output').html('storage cleared');
+                    init();
+                });
+                saveButton.on('click', function (event) {
+                    localStorage.setItem("name", $('#name').val());
+                    localStorage.setItem("age", $('#age').val());
+                    sessionStorage.setItem("city", $('#city').val());
+                    sessionStorage.setItem("country", $('#country').val());
+                    $('#output').html('storage saved');
+                });
+                showButton.on('click', function (event) {
+                    var result = '<p>'
+                        .concat('<strong>Name:</strong> ')
+                            .concat(localStorage.getItem('name')).concat('<br/>')
+                        .concat('<strong>Age:</strong> ')
+                            .concat(localStorage.getItem('age')).concat('<br/>')
+                        .concat('<strong>City:</strong> ')
+                            .concat(sessionStorage.getItem('city')).concat('<br/>')
+                        .concat('<strong>Country:</strong> ')
+                            .concat(sessionStorage.getItem('country'))
+                        .concat('</p>');
+                    $('#output').html(result);
+                });
+
+                function init() {
+                    $('#name').val(localStorage.getItem('name'));
+                    $('#age').val(localStorage.getItem('age'));
+                    $('#city').val(sessionStorage.getItem('city'));
+                    $('#country').val(sessionStorage.getItem('country'));
+                }
+
+                init();
+            });
+
+        </script>
+    </div>
+    <div class="col-md-6">
+        <p id="output"></p>
+    </div>
+</div>
+

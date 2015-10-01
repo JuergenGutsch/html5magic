@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Location";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <p id="output">
+            Loading geodata...
+        </p>
+        <script>
+            $(function () {
+                var out = $('#output');
+
+                var writeMessage = function (message) {
+                    out.html(message);
+                };
+                var getLocation = function () {
+                    if (navigator.geolocation) {
+                        // get the current position
+                        navigator.geolocation.getCurrentPosition(showLocation, showError);
+                        // fires each time the position changes
+                        // navigator.geolocation.watch.watchPosition(showLocation, showError);
+                    }
+                    else {
+                        writeMessage('Location is not supported');
+                    }
+                };
+                var showLocation = function (position) {
+                    var pos = position.coords.latitude + '<br />' + position.coords.longitude;
+
+                    var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+                    var imgUrl = "http://maps.googleapis.com/maps/api/staticmap?center=" + latlon + "&zoom=14&size=500x400&sensor=true";
+
+                    writeMessage(pos);
+                    $('#map').attr('src', imgUrl);
+                }
+                var showError = function (error) {
+                    var err = '';
+                    if (error.code === error.PERMISSION_DENIED) {
+                        err = 'PERMISSION_DENIED';
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        err = 'POSITION_UNAVAILABLE';
+                    } else if (error.code === error.TIMEOUT) {
+                        err = 'TIMEOUT';
+                    } else if (error.code === error.UNKNOWN_ERR) {
+                        err = 'UNKNOWN_ERROR';
+                    }
+                    writeMessage(err);
+                };
+
+                getLocation();
+            });
+
+        </script>
+    </div>
+    <div class="col-md-6">
+        <img id="map" />
+    </div>
+</div>

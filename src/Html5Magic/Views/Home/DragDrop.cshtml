@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "Drag & Drop";
+}
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Available:</h2>
+        <ul class="list-group drag" id="dropSource1">
+            <li id="item1" class="list-group-item" draggable="true">Wurschtsalat mit Käs</li>
+            <li id="item2" class="list-group-item" draggable="true">Semmelknödel mit Gulasch und Buttergemüse</li>
+            <li id="item3" class="list-group-item" draggable="true">Zürigschnetzeltes mit Saisongmües</li>
+            <li id="item4" class="list-group-item" draggable="true">Fleischkäswäckle</li>
+            <li id="item5" class="list-group-item" draggable="true">Fondue Chinoise</li>
+            <li id="item6" class="list-group-item" draggable="true">Zwiebelroschtbroda mit Herdöpfel</li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h2>Selected:</h2>
+        <ul class="list-group drag" id="dropTarget"></ul>
+    </div>
+</div>
+<script>
+    $(function() {
+
+        $('[draggable=true]')
+            .each(function() {
+                $(this).on('dragstart', function(event, ui) {
+                    //alert(this.innerText);
+                    event.originalEvent.dataTransfer.setData('Text', this.innerText);
+                    event.originalEvent.dataTransfer.setData('Id', this.id);
+                });
+            });
+
+        $('#dropTarget')
+            .bind('drop', function(event, ui) {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                }
+
+                var text = '';
+                var li = $('<li class="list-group-item"></li>');
+
+                if (event.originalEvent.dataTransfer.files[0]) {
+                    var file = event.originalEvent.dataTransfer.files[0];
+
+                    var reader = new FileReader();
+                    // Closure to capture the file information. 
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            var img = $('<img class="thumb" />');
+                            img.attr('src', e.target.result);
+                            img.attr('title', escape(theFile.name));
+                            li.append(img);
+                            li.append(theFile.name);
+                        };
+                    })(file);
+
+                    reader.readAsDataURL(file);
+
+                    li.append(text);
+
+                } else {
+                    var id = event.originalEvent.dataTransfer.getData('Id');
+                    text = event.originalEvent.dataTransfer.getData('Text');
+                    $('#' + id).remove();
+
+                    li.append(text);
+                }
+
+                $(this).append(li);
+                $(this).removeClass('dragover');
+            })
+            .bind('dragover', function() {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                }
+
+                $(this).addClass('dragover');
+
+            })
+            .bind('dragenter', function() {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                }
+
+                $(this).addClass('dragover');
+            })
+            .bind('dragleave', function() {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                }
+
+                $(this).removeClass('dragover');
+            })
+            .bind('dragend', function() {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                }
+
+                $(this).removeClass('dragover');
+            });
+    });
+
+
+//var data = new FormData();
+    //data.append('file', file);
+    //data.append('fileName', file.name);
+    //data.append('fileSize', file.size);
+    //data.append('fileType', file.type);
+
+    //$http
+    //    .post('/api/DocumentApi/Upload/' + id, data)
+    //    .success(function () {
+    //        alert('success');
+    //    })
+    //    .error(function () {
+    //        alert('error');
+    //    });
+</script>
